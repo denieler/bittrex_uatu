@@ -1,6 +1,6 @@
 <html>
     <head>
-        <script src="./index.js"></script>
+        <script src="./../../dist/bundle.js"></script>
         <style>
             body {
                 width: 450px;
@@ -8,32 +8,36 @@
             .notification-conditions {
                 margin: 10px 0;
             }
+
+            .add-condition {
+                display: flex;
+            }
+
+            .add-condition__column {
+                display: flex;
+                flex-direction: column;
+                margin: 5px;
+                height: 34px;
+            }
+
+            .add-condition__column__save-button {
+                height: 100%;
+            }
+
+            .notifications-list {
+                display: flex;
+            }
+
+            .notifications-list__list {
+                flex-grow: 1;
+            }
+
+            .notifications-list__clear-button {
+                flex-grow: 0;
+            }
         </style>
     </head>
     <body>
-        <h1>Bittrex Notifications</h1>
-
-        <div id='notification-conditions' class='notification-conditions'>
-            
-        </div>
-
-        <div>
-            <div>
-                <label>Currency symbol:</label>
-                <input id='symbol'/>
-            </div>
-
-            <div>
-                <label>Condition</label>
-                <select id='conditions-dropdown'></select>
-            </div>
-
-            <div>
-                <label>Amount:</label>
-                <input id='amount'/>
-            </div>
-
-            <button id='save-button'>Save</button>
-        </div>
+        <div id='app'></div>
     </body>
 </html>
