@@ -1,0 +1,23 @@
+{
+	"name": "Bittrex_uatu",
+	"description": "Chrome extension to notify you about any change in Bittrex immediately",
+	"version": "0.1",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_title": "Bittrex Uatu",
+        "default_popup": "src/popup/index.html"
+    },
+	"permissions": [
+		"nativeMessaging",
+		"tabs",
+		"notifications",
+		"storage",
+		"http://*/",
+        "https://*/"
+	],
+	"background": {
+		"scripts": ["src/background.js"]
+	},
+	"web_accessible_resources": ["/vk_files/up-volume.js", "/vk_files/down-volume.js"]
+}
