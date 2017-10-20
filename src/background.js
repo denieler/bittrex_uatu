@@ -25,7 +25,11 @@
 	}
 
 	function parseTitlePrice (title) {
-		return /\((.*)\) USD.*/ig.exec(title)[1]
+		try {
+			return /\((.*)\) USD.*/ig.exec(title)[1]
+		} catch (e) {
+			return null
+		}
 	}
 
 	function turnOffNotificationConditions (conditionsToRemove) {
@@ -64,7 +68,11 @@
 			const title = tab.title
 
 			if (title !== oldTitle) {
-				const price = parseFloat(parseTitlePrice(title))
+				const priceStr = parseTitlePrice(title)
+				if (!priceStr)
+					return;
+
+				const price = parseFloat(priceStr)
 
 				chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
 					const btcConditions = notificationConditions.filter(c => c.currency === 'BTC')
