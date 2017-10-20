@@ -6,10 +6,6 @@ const NOTIFICATION_CONDITIONS_STORAGE_KEY = 'notificationConditions'
 const LESS_OR_EQUAL = '<='
 
 class NotificationConditionsList extends Component {
-    onClearConditions () {
-        this.props.clearConditions()
-    }
-
     render () {
         return (
             <div className='notifications-list'>
@@ -18,7 +14,11 @@ class NotificationConditionsList extends Component {
                     this.props.conditionsList 
                     ? this.props.conditionsList.map(
                         c => (
-                            <div style={c.off ? {} : {color: 'green'}} key={uuid()}>
+                            <div className={
+                                c.off 
+                                ? 'notifications-list__list__item notifications-list__list__item--inactive' 
+                                : 'notifications-list__list__item'
+                            } key={uuid()}>
                                 {c.currency} {c.condition} {c.value}
                             </div>
                         )
@@ -28,7 +28,7 @@ class NotificationConditionsList extends Component {
                 </div>
 
                 <div className='notifications-list__clear-button'>
-                    <button onClick={_ => this.onClearConditions()}>Clear All</button>
+                    <button onClick={_ => this.props.clearConditions()}>Clear All</button>
                 </div>
             </div>
         )
