@@ -19,5 +19,7 @@
 	"background": {
 		"scripts": ["src/background.js"]
 	},
-	"web_accessible_resources": ["/vk_files/up-volume.js", "/vk_files/down-volume.js"]
+	"web_accessible_resources": [
+		"images/icon.png"
+	]
 }
