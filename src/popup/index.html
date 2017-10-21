@@ -2,9 +2,29 @@
     <head>
         <script src="./../../dist/bundle.js"></script>
         <style>
+            * {
+                box-sizing: border-box;
+            }
+
             body {
                 width: 450px;
+
+                font-family: 'Helvetica', 'Arial', sans-serif;
+                font-size: 16px;
             }
+
+            h1 {
+                margin: 0;
+            }
+
+            input, select {
+                height: 40px;
+                line-height: 40px;
+                font-size: 18px;
+                width: 109px;
+                padding: 5px;
+            }
+
             .notification-conditions {
                 margin: 10px 0;
             }
@@ -17,34 +37,127 @@
                 display: flex;
                 flex-direction: column;
                 margin: 5px;
-                height: 34px;
+            }
+
+            .add-condition__column__label {
+                height: 20px;
+                line-height: 20px;
             }
 
             .add-condition__column__save-button {
-                height: 100%;
+                padding-top: 20px;
+                justify-content: center;
+            }
+
+            .add-condition__column__save-button__button {
+                text-decoration: none;
+                height: 40px;
+                display: flex;
+                align-items: center;
+
+                border: 1px solid #dcdcdc;
+                padding: 14px;
+                color: #0B170E;
+            }
+
+            .add-condition__column__save-button__button:hover {
+                background: #f9f9f9;
+            }
+
+            .add-condition__column__save-button__button__label {
+                padding-left: 22px;
             }
 
             .notifications-list {
                 display: flex;
+                flex-direction: column;
+                margin: 10px 0;
             }
 
             .notifications-list__list {
-                flex-grow: 1;
-                margin: 5px;
-                line-height: 30px;
+                font-size: 18px;
             }
 
             .notifications-list__list__item {
-                color: green;
+                color: #0B170E;
+
+                display: flex;
+                align-items: center;
+
+                height: 45px;
+                box-shadow: 0px 1px 3px 0px;
+                padding: 10px;
+                margin: 5px 0;
             }
 
-            .notifications-list__list__item--inactive {
+            .notifications-list__list__item__text {
+                color: #2DB24B;
+            }
+
+            .notifications-list__list__item__text--inactive {
                 color: #cccccc;
             }
 
-            .notifications-list__clear-button {
+            .notifications-list__clear-button-container {
                 margin: 5px;
-                flex-grow: 0;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .notifications-list__clear-button-container__button {
+                display: block;
+                text-decoration: none;
+                color: #0B170E;
+                font-size: smaller;
+                line-height: 21px;
+            }
+            
+            .notifications-list__clear-button-container__button__label {
+                padding-left: 25px;
+            }
+
+            .close.icon {
+                color: #000;
+                position: absolute;
+                margin-top: 0;
+                margin-left: 0;
+                width: 21px;
+                height: 21px;
+            }
+
+            .close.icon:before {
+                content: '';
+                position: absolute;
+                top: 10px;
+                width: 21px;
+                height: 1px;
+                background-color: currentColor;
+                -webkit-transform: rotate(-45deg);
+                        transform: rotate(-45deg);
+            }
+
+            .close.icon:after {
+                content: '';
+                position: absolute;
+                top: 10px;
+                width: 21px;
+                height: 1px;
+                background-color: currentColor;
+                -webkit-transform: rotate(45deg);
+                        transform: rotate(45deg);
+            }
+
+            .check.icon {
+                color: #000;
+                position: absolute;
+                margin-left: 3px;
+                margin-top: -4px;
+                width: 14px;
+                height: 8px;
+                border-bottom: solid 1px currentColor;
+                border-left: solid 1px currentColor;
+                -webkit-transform: rotate(-45deg);
+                        transform: rotate(-45deg);
             }
         </style>
     </head>

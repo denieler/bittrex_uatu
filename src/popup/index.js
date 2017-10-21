@@ -2,33 +2,48 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import uuid from 'uuid/v1'
 
-const NOTIFICATION_CONDITIONS_STORAGE_KEY = 'notificationConditions'
+import { 
+    add as addNotificationCondition, 
+    all as loadNotificationConditions,
+    removeAll as removeAllNotificationConditions
+} from './repositories/notifications'
+
 const LESS_OR_EQUAL = '<='
 
 class NotificationConditionsList extends Component {
     render () {
         return (
             <div className='notifications-list'>
+                { 
+                    this.props.conditionsList && this.props.conditionsList.length
+                    ?
+                        <div className='notifications-list__clear-button-container'>
+                            <a href='#' className='notifications-list__clear-button-container__button' onClick={_ => this.props.clearConditions()}>
+                                <div className='close icon'></div>
+                                <span className='notifications-list__clear-button-container__button__label'>Remove All</span>
+                            </a>
+                        </div>
+                    : null
+                }
+
                 <div className='notifications-list__list'>
                 {
                     this.props.conditionsList 
                     ? this.props.conditionsList.map(
                         c => (
-                            <div className={
-                                c.off 
-                                ? 'notifications-list__list__item notifications-list__list__item--inactive' 
-                                : 'notifications-list__list__item'
-                            } key={uuid()}>
-                                {c.currency} {c.condition} {c.value}
+                            <div className='notifications-list__list__item' key={uuid()}>
+                                <span className={
+                                    c.off 
+                                    ? 'notifications-list__list__item__text notifications-list__list__item__text--inactive' 
+                                    : 'notifications-list__list__item__text'
+                                }>
+                                    {c.currency} {c.condition} {c.value}
+                                </span>
                             </div>
                         )
                     )
                     : null
                 }
-                </div>
-
-                <div className='notifications-list__clear-button'>
-                    <button onClick={_ => this.props.clearConditions()}>Clear All</button>
                 </div>
             </div>
         )
@@ -72,11 +87,7 @@ class AddCondition extends Component {
             off: false
         }
     
-        chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
-            chrome.storage.local.set({
-                [NOTIFICATION_CONDITIONS_STORAGE_KEY]: notificationConditions.concat(notificationCondition)
-            })
-        })
+        addNotificationCondition(notificationCondition)
 
         this.props.onAddedNewCondition(notificationCondition)
     }
@@ -85,12 +96,12 @@ class AddCondition extends Component {
         return (
             <div className='add-condition'>
                 <div className='add-condition__column'>
-                    <label>Currency</label>
+                    <label className='add-condition__column__label'>Currency</label>
                     <input onChange={e => this.onCurrencyChange(e)} />
                 </div>
 
                 <div className='add-condition__column'>
-                    <label>Condition</label>
+                    <label className='add-condition__column__label'>Condition</label>
                     <select defaultValue={LESS_OR_EQUAL} onChange={e => this.onConditionChange(e)}>
                         <option value={LESS_OR_EQUAL}>{LESS_OR_EQUAL}</option>
                         <option value='>='>{'>='}</option>
@@ -100,12 +111,15 @@ class AddCondition extends Component {
                 </div>
 
                 <div className='add-condition__column'>
-                    <label>Amount</label>
+                    <label className='add-condition__column__label'>Amount</label>
                     <input onChange={e => this.onAmountChange(e)} />
                 </div>
 
-                <div className='add-condition__column'>
-                    <button className='add-condition__column__save-button' onClick={e => this.onSave(e)}>Save</button>
+                <div className='add-condition__column add-condition__column__save-button'>
+                    <a href='#' className='add-condition__column__save-button__button' onClick={e => this.onSave(e)}>
+                        <div className='check icon'></div>
+                        <span className='add-condition__column__save-button__button__label'>Save</span>
+                    </a>
                 </div>
             </div>
         )
@@ -132,12 +146,7 @@ class App extends Component {
     loadExistingNotificationConditions () {
         const notificationConditionsDiv = document.getElementById('notification-conditions')
     
-        return new Promise((resolve, reject) => {
-            chrome.storage.local.get(
-                NOTIFICATION_CONDITIONS_STORAGE_KEY, 
-                ({notificationConditions}) => resolve(notificationConditions)
-            )
-        })
+        return new Promise((resolve, reject) => loadNotificationConditions(resolve))
     }
 
     onAddCondition (condition) {
@@ -148,9 +157,7 @@ class App extends Component {
     }
 
     clearConditions () {
-        chrome.storage.local.set({
-            [NOTIFICATION_CONDITIONS_STORAGE_KEY]: []
-        })
+        removeAllNotificationConditions()
         this.setState({
             conditionsList: []
         })
@@ -159,7 +166,7 @@ class App extends Component {
     render () {
         return (
             <div>
-                <h1>Bittrex Notifications</h1>
+                <h1>Bittrex Uatu</h1>
 
                 <NotificationConditionsList 
                     conditionsList={this.state.conditionsList} 
