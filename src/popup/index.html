@@ -8,9 +8,18 @@
 
             body {
                 width: 450px;
+                margin: 0;
 
                 font-family: 'Helvetica', 'Arial', sans-serif;
                 font-size: 16px;
+
+                color: #000002;
+            }
+
+            header {
+                background: #01B8F1;
+                color: #F2EEEF;
+                padding: 30px 5px;
             }
 
             h1 {
@@ -21,7 +30,7 @@
                 height: 40px;
                 line-height: 40px;
                 font-size: 18px;
-                width: 109px;
+                width: 90px;
                 padding: 5px;
             }
 
@@ -30,13 +39,33 @@
             }
 
             .add-condition {
+                margin-top: 10px;
+            }
+
+            .add-condition__header {
+                color: #01B8F1;
+                font-size: 24px;
+                padding: 0 5px;
+                margin: 0;
+            }
+
+            .add-condition__content {
                 display: flex;
+                padding: 0 30px;
             }
 
             .add-condition__column {
                 display: flex;
                 flex-direction: column;
                 margin: 5px;
+            }
+
+            .add-condition__column:first-of-type {
+                margin-left: 0;
+            }
+
+            .add-condition__column:last-of-type {
+                margin-right: 0;
             }
 
             .add-condition__column__label {
@@ -71,7 +100,6 @@
             .notifications-list {
                 display: flex;
                 flex-direction: column;
-                margin: 10px 0;
             }
 
             .notifications-list__list {
@@ -79,19 +107,19 @@
             }
 
             .notifications-list__list__item {
-                color: rgb(122, 126, 123);
-
                 display: flex;
                 align-items: center;
+                height: 55px;
+                border-bottom: 1px solid #ececec;
+                padding: 0 30px;
+            }
 
-                height: 45px;
-                box-shadow: 0px 1px 1px 0px;
-                padding: 10px;
-                margin: 5px 0;
+            .notifications-list__list__item:last-of-type {
+                border-bottom: none;
             }
 
             .notifications-list__list__item__text {
-                color: #2DB24B;
+                color: #95CB15;
             }
 
             .notifications-list__list__item__text--inactive {

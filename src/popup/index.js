@@ -95,31 +95,35 @@ class AddCondition extends Component {
     render () {
         return (
             <div className='add-condition'>
-                <div className='add-condition__column'>
-                    <label className='add-condition__column__label'>Currency</label>
-                    <input onChange={e => this.onCurrencyChange(e)} />
-                </div>
+                <h2 className='add-condition__header'>Add notification</h2>
 
-                <div className='add-condition__column'>
-                    <label className='add-condition__column__label'>Condition</label>
-                    <select defaultValue={LESS_OR_EQUAL} onChange={e => this.onConditionChange(e)}>
-                        <option value={LESS_OR_EQUAL}>{LESS_OR_EQUAL}</option>
-                        <option value='>='>{'>='}</option>
-                        <option value='<'>{'<'}</option>
-                        <option value='>'>{'>'}</option>
-                    </select>
-                </div>
+                <div className='add-condition__content'>
+                    <div className='add-condition__column'>
+                        <label className='add-condition__column__label'>Currency</label>
+                        <input onChange={e => this.onCurrencyChange(e)} />
+                    </div>
 
-                <div className='add-condition__column'>
-                    <label className='add-condition__column__label'>Amount</label>
-                    <input onChange={e => this.onAmountChange(e)} />
-                </div>
+                    <div className='add-condition__column'>
+                        <label className='add-condition__column__label'>Condition</label>
+                        <select defaultValue={LESS_OR_EQUAL} onChange={e => this.onConditionChange(e)}>
+                            <option value={LESS_OR_EQUAL}>{LESS_OR_EQUAL}</option>
+                            <option value='>='>{'>='}</option>
+                            <option value='<'>{'<'}</option>
+                            <option value='>'>{'>'}</option>
+                        </select>
+                    </div>
 
-                <div className='add-condition__column add-condition__column__save-button'>
-                    <a href='#' className='add-condition__column__save-button__button' onClick={e => this.onSave(e)}>
-                        <div className='check icon'></div>
-                        <span className='add-condition__column__save-button__button__label'>Save</span>
-                    </a>
+                    <div className='add-condition__column'>
+                        <label className='add-condition__column__label'>Amount</label>
+                        <input onChange={e => this.onAmountChange(e)} />
+                    </div>
+
+                    <div className='add-condition__column add-condition__column__save-button'>
+                        <a href='#' className='add-condition__column__save-button__button' onClick={e => this.onSave(e)}>
+                            <div className='check icon'></div>
+                            <span className='add-condition__column__save-button__button__label'>Save</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         )
@@ -166,7 +170,9 @@ class App extends Component {
     render () {
         return (
             <div>
-                <h1>Bittrex Uatu</h1>
+                <header>
+                    <h1>Bittrex Uatu</h1>
+                </header>
 
                 <NotificationConditionsList 
                     conditionsList={this.state.conditionsList} 
