@@ -32,7 +32,9 @@ class NotificationConditionsList extends Component {
                 <div className='notifications-list__list'>
                 {
                     this.props.conditionsList 
-                    ? this.props.conditionsList.map(
+                    ? this.props.conditionsList
+                        .sort(n => n.off)
+                        .map(
                         c => (
                             <div className='notifications-list__list__item' key={uuid()}>
                                 <span className={
