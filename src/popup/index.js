@@ -14,17 +14,20 @@ class NotificationConditionsList extends Component {
     render () {
         return (
             <div className='notifications-list'>
-                { 
-                    this.props.conditionsList && this.props.conditionsList.length
-                    ?
-                        <div className='notifications-list__clear-button-container'>
-                            <a href='#' className='notifications-list__clear-button-container__button' onClick={_ => this.props.clearConditions()}>
-                                <div className='close icon'></div>
-                                <span className='notifications-list__clear-button-container__button__label'>Remove All</span>
-                            </a>
-                        </div>
-                    : null
-                }
+                <div className='notifications-list__header'>
+                    <h2>Notifications</h2>
+                    { 
+                        this.props.conditionsList && this.props.conditionsList.length
+                        ?
+                            <div className='notifications-list__clear-button-container'>
+                                <a href='#' className='notifications-list__clear-button-container__button' onClick={_ => this.props.clearConditions()}>
+                                    <div className='close icon'></div>
+                                    <span className='notifications-list__clear-button-container__button__label'>Remove All</span>
+                                </a>
+                            </div>
+                        : null
+                    }
+                </div>
 
                 <div className='notifications-list__list'>
                 {
