@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+var config = {
     entry: {
         popup: './src/popup/index.js',
         background: './src/background.js'
@@ -26,7 +26,13 @@ module.exports = {
         colors: true
     },
     devtool: 'source-map',
-    plugins: [
-        new UglifyJSPlugin()
-    ]
+    plugins: []
 };
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(
+        new UglifyJSPlugin()
+    )
+}
+
+module.exports = config;

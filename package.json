@@ -6,6 +6,7 @@
   "scripts": {
     "babel": "babel --presets es2015 ./src/popup/index.js -o dist/bundle.js",
     "webpack": "webpack",
+    "deploy_build": "NODE_ENV=production webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --progress --colors --watch"
   },
@@ -20,7 +21,6 @@
   },
   "homepage": "https://github.com/denieler/bittrex_uatu#readme",
   "dependencies": {
-    "node.bittrex.api": "^1.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "uuid": "^3.1.0"
