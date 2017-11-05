@@ -1,11 +1,15 @@
 var path = require('path');
 var webpack = require('webpack');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
-    entry: './src/popup/index.js',
+var config = {
+    entry: {
+        popup: './src/popup/index.js',
+        background: './src/background.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     module: {
         loaders: [
@@ -21,5 +25,14 @@ module.exports = {
     stats: {
         colors: true
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: []
 };
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(
+        new UglifyJSPlugin()
+    )
+}
+
+module.exports = config;

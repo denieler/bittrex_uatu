@@ -1,8 +1,10 @@
 (function () {
 	console.log('I\'m an extension to track Bittrex!')
 
+	const bittrexApiUrl = 'https://bittrex.com/api/v1.1/'
 	const bittrexUrlsPattern = 'https://bittrex.com/Market/Index?MarketName=*'
 	const NOTIFICATION_CONDITIONS_STORAGE_KEY = 'notificationConditions'
+	const PREV_PRICES_STORAGE_KEY = 'prevPrices'
 
 	function findBittrexTabs (cb) {
 		const queryInfo = {
@@ -34,6 +36,10 @@
 
 	function turnOffNotificationConditions (conditionsToRemove) {
 		chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
+			if (!notificationConditions) {
+				return
+			}
+
 			const notifications = notificationConditions.map(c => {
 				if (conditionsToRemove.some(cr => 
 					c.currency === cr.currency
@@ -60,6 +66,43 @@
 		}
 	}
 
+	function isPriceChanged (price, oldPrice) {
+		return !oldPrice || price !== oldPrice
+	}
+
+	function checkConditions (price, currency) {
+		var p = new Promise(resolve => {
+			chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
+				if (!notificationConditions) {
+					resolve(null)
+					return
+				}
+
+				const btcConditions = notificationConditions.filter(c => c.currency === currency)
+				const satisfiedConditions = btcConditions.filter(c => 
+					!c.off && fitsCondition(c, price)
+				)
+
+				resolve(satisfiedConditions)
+			})
+		})
+
+		return p
+	}
+
+	function onPriceChange (price, oldPrice) {
+		if (isPriceChanged(price, oldPrice)) {				
+			checkConditions(price, 'BTC')
+			.then(satisfiedConditions => {
+				const shouldNotify = satisfiedConditions && satisfiedConditions.length
+				if (shouldNotify) {
+					showChangePriceNotification(price)
+					turnOffNotificationConditions(satisfiedConditions)
+				}
+			})
+		}
+	}
+
 	function processTab (tab) {
 		const windowId = tab.windowId
 		const titleStorageKey = windowId + '_title'
@@ -67,33 +110,74 @@
 			const oldTitle = value[titleStorageKey]
 			const title = tab.title
 
-			if (title !== oldTitle) {
-				const priceStr = parseTitlePrice(title)
-				if (!priceStr)
-					return;
+			const priceStr = parseTitlePrice(title)
+			if (!priceStr)
+				return;
 
-				const price = parseFloat(priceStr)
-
-				chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
-					const btcConditions = notificationConditions.filter(c => c.currency === 'BTC')
-					const satisfiedConditions = btcConditions.filter(c => 
-						!c.off && fitsCondition(c, price)
-					)
-
-					if (satisfiedConditions.length) {
-						showChangePriceNotification(price)
-						turnOffNotificationConditions(satisfiedConditions)
-					}
-				})
-			}
+			const price = parseFloat(priceStr)
+			const oldPrice = parseTitlePrice(parseFloat(oldTitle))
+			
+			onPriceChange(price, oldPrice)
 
 			chrome.storage.local.set({[titleStorageKey]: title})
 		})
 	}
 
+	function getPriceFromApi (market) {
+		return fetch(bittrexApiUrl + 'public/getticker',
+		{
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify({ market })
+		})
+		.then(res => res.json())
+		.then(ticker => {
+			return ticker.result.Ask
+		})
+	}
+
+	function getPrevPrice (currency) {
+		var p = new Promise(resolve => {
+			chrome.storage.local.get(PREV_PRICES_STORAGE_KEY, ({prevPrices}) => {
+				resolve(prevPrices && prevPrices[currency])
+			})
+		})
+
+		return p
+	}
+
+	function updatePrevPrice (price, currency) {
+		chrome.storage.local.get(PREV_PRICES_STORAGE_KEY, ({prevPrices}) => {
+			if (!prevPrices) {
+				prevPrices = { [currency]: price }
+			} else {
+				prevPrices[currency] = price
+			}
+
+			chrome.storage.local.set({[PREV_PRICES_STORAGE_KEY]: prevPrices})
+		})
+	}
+
 	function watchForChange () {
 		setInterval(_ => {
-			findBittrexTabs(tabs => tabs.map(processTab))
+			// findBittrexTabs(tabs => tabs.map(processTab))
+
+			const currency = 'BTC'
+			const market = `USDT-${currency}`
+
+			const price = getPriceFromApi(market)
+			const oldPrice = getPrevPrice(currency)
+			Promise.all([price, oldPrice])
+			.then(([price, oldPrice]) => {
+				console.log('Prices:', price, oldPrice)
+				onPriceChange(price, oldPrice)
+	
+				if (isPriceChanged(price, oldPrice)) {
+					updatePrevPrice(price, currency)
+				}
+			})
 		}, 1500)
 	}
 

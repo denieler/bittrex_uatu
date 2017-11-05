@@ -2,8 +2,10 @@ const NOTIFICATION_CONDITIONS_STORAGE_KEY = 'notificationConditions'
 
 export const add = (notificationCondition) => {
     chrome.storage.local.get(NOTIFICATION_CONDITIONS_STORAGE_KEY, ({notificationConditions}) => {
+        const conditions = notificationConditions || []
+        
         chrome.storage.local.set({
-            [NOTIFICATION_CONDITIONS_STORAGE_KEY]: notificationConditions.concat(notificationCondition)
+            [NOTIFICATION_CONDITIONS_STORAGE_KEY]: conditions.concat(notificationCondition)
         })
     })
 }
@@ -11,7 +13,7 @@ export const add = (notificationCondition) => {
 export const all = (callback) => {
     chrome.storage.local.get(
         NOTIFICATION_CONDITIONS_STORAGE_KEY, 
-        ({notificationConditions}) => callback(notificationConditions)
+        ({notificationConditions}) => callback(notificationConditions || [])
     )
 }
 

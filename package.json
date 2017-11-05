@@ -6,6 +6,7 @@
   "scripts": {
     "babel": "babel --presets es2015 ./src/popup/index.js -o dist/bundle.js",
     "webpack": "webpack",
+    "deploy_build": "NODE_ENV=production webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --progress --colors --watch"
   },
@@ -29,6 +30,7 @@
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "uglifyjs-webpack-plugin": "^1.0.1",
     "webpack": "^3.8.1"
   }
 }
