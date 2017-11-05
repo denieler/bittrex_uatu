@@ -1,7 +1,7 @@
 {
 	"name": "Bittrex_uatu",
 	"description": "Chrome extension to notify you about any change in Bittrex immediately",
-	"version": "0.1",
+	"version": "0.2",
     "manifest_version": 2,
     "browser_action": {
         "default_icon": "images/icon.png",
