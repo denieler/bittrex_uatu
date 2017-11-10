@@ -15,11 +15,11 @@
 		})
 	}
 
-	function showChangePriceNotification (price) {
+	function showChangePriceNotification (price, currency) {
 		const changePriceNotification = {
 			iconUrl: 'images/icon.png',
 			type: 'basic',
-			title: 'Bittrex BTC price change',
+			title: `Bittrex ${currency} price change`,
 			message: 'Price: ' + price.toFixed(2),
 			eventTime: Date.now() + 1300
 		}
@@ -90,13 +90,13 @@
 		return p
 	}
 
-	function onPriceChange (price, oldPrice) {
+	function onPriceChange (price, oldPrice, currency) {
 		if (isPriceChanged(price, oldPrice)) {				
-			checkConditions(price, 'BTC')
+			checkConditions(price, currency)
 			.then(satisfiedConditions => {
 				const shouldNotify = satisfiedConditions && satisfiedConditions.length
 				if (shouldNotify) {
-					showChangePriceNotification(price)
+					showChangePriceNotification(price, currency)
 					turnOffNotificationConditions(satisfiedConditions)
 				}
 			})
@@ -164,19 +164,26 @@
 		setInterval(_ => {
 			// findBittrexTabs(tabs => tabs.map(processTab))
 
-			const currency = 'BTC'
-			const market = `USDT-${currency}`
+			const markets = [{
+				name: 'USDT-BTC',
+				currency: 'BTC'
+			}, {
+				name: 'USDT-BCC',
+				currency: 'BCC'
+			}]
 
-			const price = getPriceFromApi(market)
-			const oldPrice = getPrevPrice(currency)
-			Promise.all([price, oldPrice])
-			.then(([price, oldPrice]) => {
-				console.log('Prices:', price, oldPrice)
-				onPriceChange(price, oldPrice)
-	
-				if (isPriceChanged(price, oldPrice)) {
-					updatePrevPrice(price, currency)
-				}
+			markets.forEach(market => {
+				const price = getPriceFromApi(market.name)
+				const oldPrice = getPrevPrice(market.currency)
+				Promise.all([price, oldPrice])
+				.then(([price, oldPrice]) => {
+					console.log('Prices:', price, oldPrice)
+					onPriceChange(price, oldPrice, market.currency)
+		
+					if (isPriceChanged(price, oldPrice)) {
+						updatePrevPrice(price, market.currency)
+					}
+				})
 			})
 		}, 1500)
 	}
