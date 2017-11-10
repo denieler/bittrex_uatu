@@ -55,7 +55,11 @@
 		})
 	}
 
-	function fitsCondition (notificaionCondition, price) {
+	function fitsCondition (notificaionCondition, price, currency) {
+		if (notificaionCondition.currency !== currency) {
+			return false
+		}
+
 		switch (notificaionCondition.condition) {
 			case '<=': return price <= notificaionCondition.value
 			case '>=': return price >= notificaionCondition.value
@@ -78,9 +82,9 @@
 					return
 				}
 
-				const btcConditions = notificationConditions.filter(c => c.currency === currency)
-				const satisfiedConditions = btcConditions.filter(c => 
-					!c.off && fitsCondition(c, price)
+				const coinConditions = notificationConditions.filter(c => c.currency === currency)
+				const satisfiedConditions = coinConditions.filter(c => 
+					!c.off && fitsCondition(c, price, currency)
 				)
 
 				resolve(satisfiedConditions)
@@ -96,8 +100,10 @@
 			.then(satisfiedConditions => {
 				const shouldNotify = satisfiedConditions && satisfiedConditions.length
 				if (shouldNotify) {
-					showChangePriceNotification(price, currency)
-					turnOffNotificationConditions(satisfiedConditions)
+					satisfiedConditions.forEach(condition => {
+						showChangePriceNotification(condition.value, condition.currency)
+						turnOffNotificationConditions([condition])
+					})
 				}
 			})
 		}
