@@ -15,12 +15,12 @@
 		})
 	}
 
-	function showChangePriceNotification (price, currency) {
+	function showChangePriceNotification (condition, realPrice) {
 		const changePriceNotification = {
 			iconUrl: 'images/icon.png',
 			type: 'basic',
-			title: `Bittrex ${currency} price change`,
-			message: 'Price: ' + price.toFixed(2),
+			title: `Bittrex ${condition.currency} price change`,
+			message: `Price: ${realPrice.toFixed(2)}. Condition: ${condition.condition}${condition.value.toFixed(2)}`,
 			eventTime: Date.now() + 1300
 		}
 		chrome.notifications.create(null, changePriceNotification)
@@ -101,7 +101,7 @@
 				const shouldNotify = satisfiedConditions && satisfiedConditions.length
 				if (shouldNotify) {
 					satisfiedConditions.forEach(condition => {
-						showChangePriceNotification(condition.value, condition.currency)
+						showChangePriceNotification(condition, price)
 						turnOffNotificationConditions([condition])
 					})
 				}
