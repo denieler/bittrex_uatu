@@ -1,4 +1,4 @@
-(function () {
+(async function () {
 	console.log('I\'m an extension to track Bittrex!')
 
 	const bittrexApiUrl = 'https://bittrex.com/api/v1.1/'
@@ -94,7 +94,7 @@
 		return p
 	}
 
-	function onPriceChange (price, oldPrice, currency) {
+	function onPriceChange (currency, price, oldPrice) {
 		if (isPriceChanged(price, oldPrice)) {				
 			checkConditions(price, currency)
 			.then(satisfiedConditions => {
@@ -123,7 +123,7 @@
 			const price = parseFloat(priceStr)
 			const oldPrice = parseTitlePrice(parseFloat(oldTitle))
 			
-			onPriceChange(price, oldPrice)
+			onPriceChange(null, price, oldPrice)
 
 			chrome.storage.local.set({[titleStorageKey]: title})
 		})
@@ -166,35 +166,40 @@
 		})
 	}
 
-	function watchForChange () {
-		setInterval(_ => {
-			// findBittrexTabs(tabs => tabs.map(processTab))
+	async function watchForChange () {
+		// findBittrexTabs(tabs => tabs.map(processTab))
 
-			const markets = [{
-				name: 'USDT-BTC',
-				currency: 'BTC'
-			}, {
-				name: 'USDT-BCC',
-				currency: 'BCC'
-			}]
+		const markets = [{
+			name: 'USDT-BTC',
+			currency: 'BTC'
+		}, {
+			name: 'USDT-BCC',
+			currency: 'BCC'
+		}]
 
-			markets.forEach(market => {
-				const price = getPriceFromApi(market.name)
-				const oldPrice = getPrevPrice(market.currency)
-				Promise.all([price, oldPrice])
-				.then(([price, oldPrice]) => {
-					console.log('Prices:', price, oldPrice)
-					onPriceChange(price, oldPrice, market.currency)
-		
-					if (isPriceChanged(price, oldPrice)) {
-						updatePrevPrice(price, market.currency)
-					}
-				})
+		for (let market of markets) {
+			const promises = []
+			promises.push(market.currency)
+			promises.push(getPriceFromApi(market.name))
+			promises.push(getPrevPrice(market.currency))
+			await Promise.all(promises)
+			.then(([currency, price, oldPrice]) => {
+				console.log('Currency', currency, 'Prices:', price, oldPrice)
+				onPriceChange(currency, price, oldPrice)
+
+				if (isPriceChanged(price, oldPrice)) {
+					updatePrevPrice(price, market.currency)
+				}
 			})
-		}, 1500)
+			await new Promise(resolve => setTimeout(_ => resolve(), 1000))
+		}
+
+		await new Promise(resolve => setTimeout(_ => resolve(), 1000))
 	}
 
-	watchForChange()
+	while(true) {
+		await watchForChange()
+	}
 })()
 
 // var hostName = "com.denieler.shuttle_control_panel";
