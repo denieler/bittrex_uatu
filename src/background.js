@@ -198,7 +198,11 @@
 	}
 
 	while(true) {
-		await watchForChange()
+		try {
+			await watchForChange()
+		} catch (e) {
+			console.log('General error:', e)
+		}
 	}
 })()
 
